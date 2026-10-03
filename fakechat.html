@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fake Chat WhatsApp Pro</title>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Roboto',sans-serif}
+body{background:#111b21;display:flex;justify-content:center;padding:20px;padding-bottom:80px}
+.wrapper{width:100%;max-width:450px;position:relative}
+
+.menu-btn{position:fixed;bottom:20px;right:20px;z-index:200;background:#00a884;border:none;width:55px;height:55px;border-radius:50%;color:white;font-size:24px;cursor:pointer;box-shadow:0 4px 15px rgba(0,168,132,0.4)}
+
+.side-menu{position:fixed;top:0;right:-300px;width:280px;height:100%;background:#202c33;color:white;transition:0.3s;z-index:199;padding:20px;overflow-y:auto}
+.side-menu.active{right:0}
+.side-menu h3{color:#00a884;margin-bottom:15px}
+.side-menu button,.side-menu a{width:100%;background:#2a3942;border:none;padding:12px;border-radius:8px;color:white;margin-bottom:10px;cursor:pointer;text-align:left;text-decoration:none;display:block;font-size:0.9rem}
+.side-menu a.channel-btn{background:#25D366;font-weight:700}
+.overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:198}
+.overlay.active{display:block}
+
+.container{width:100%;background:#0b141a;border-radius:12px;overflow:hidden}
+
+/* HEADER */
+.wa-header{background:#202c33;color:white;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.wa-header img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+.wa-header-info{flex:1}
+.wa-name{font-weight:700}
+.wa-status{font-size:0.75rem;color:#aebac1}
+.wa-icons{display:flex;gap:12px}
+.header-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+}
+.header-btn:active { transform: scale(0.9); }
+
+/* CHAT */
+.chat-area{height:500px;background-image:url('https://user-images.githubusercontent.com/1508254/28700513-3e47ff2a-73b1-11e7-86ec-6c8026f28433.png');background-size:cover;padding:15px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.bubble{max-width:75%;padding:8px 12px;border-radius:12px;font-size:0.9rem;position:relative;box-shadow:0 1px 0.5px rgba(0,0,0,.13);cursor:pointer}
+.bubble.me{background:#d9fdd3;align-self:flex-end;border-top-right-radius:2px}
+.bubble.me::before{content:'';position:absolute;top:0;right:-8px;border:8px solid transparent;border-left-color:#d9fdd3;border-top-color:#d9fdd3}
+.bubble.other{background:white;align-self:flex-start;border-top-left-radius:2px}
+.bubble.other::before{content:'';position:absolute;top:0;left:-8px;border:8px solid transparent;border-right-color:white;border-top-color:white}
+.sender-name{font-size:0.8rem;font-weight:700;color:#00a884;margin-bottom:2px}
+.bubble-footer{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:2px}
+.bubble-time{font-size:0.7rem;color:#667781}
+
+/* REPLY */
+.reply-box{background:rgba(0,0,0,0.05);border-left:3px solid #00a884;padding:6px 8px;border-radius:6px;margin-bottom:6px;font-size:0.8rem}
+.reply-name{font-weight:700;color:#00a884}
+
+.bubble-img{width:220px;border-radius:8px;margin-bottom:4px}
+
+.voice{display:flex;align-items:center;gap:8px;min-width:200px}
+.play-btn{width:32px;height:32px;background:#00a884;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:14px}
+
+/* INPUT */
+.input-area{background:#202c33;padding:10px;display:flex;gap:8px;align-items:center}
+.input-area input{flex:1;background:#2a3942;border:none;border-radius:20px;padding:10px 16px;color:white;outline:none}
+.btn-send,.btn-attach{background:#00a884;border:none;width:45px;height:45px;border-radius:50%;color:white;cursor:pointer;font-size:20px}
+
+/* TOMBOL DOWNLOAD WARNA BIRU */
+.btn-download {
+  background: #0084ff!important;
+  border:none;
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  color:white;
+  cursor:pointer;
+  font-size:18px;
+  box-shadow: 0 2px 8px rgba(0,132,255,0.4);
+}
+.btn-download:active { transform: scale(0.9); }
+
+.reply-preview{background:#2a3942;padding:8px 12px;color:white;display:flex;justify-content:space-between;align-items:center}
+.reply-preview.close{cursor:pointer;color:#ef4444}
+
+.panel{background:#202c33;padding:15px;color:white;border-radius:12px;margin-top:20px}
+.panel h3{color:#00a884;margin-bottom:15px}
+.panel input,.panel select{width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:none;background:#2a3942;color:white}
+.panel button{background:#00a884;border:none;padding:10px;width:100%;border-radius:8px;color:white;font-weight:700;cursor:pointer;margin-bottom:8px}
+
+/* TOGGLE SWITCH iOS */
+.switch-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #2a3942;
+  padding: 12px 15px;
+  border-radius: 12px;
+  margin: 15px 0;
+  color: white;
+}
+.switch-label { font-weight: 700; font-size: 0.9rem; }
+.switch { position: relative; display: inline-block; width: 60px; height: 32px; }
+.switch input { display: none; }
+.slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #36474f; transition:.3s; border-radius: 34px;
+}
+.slider:before {
+  position: absolute; content: ""; height: 24px; width: 24px; left: 4px; bottom: 4px;
+  background-color: white; transition:.3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+input:checked +.slider { background-color: #00a884; }
+input:checked +.slider:before { transform: translateX(28px); }
+.slider:after { content: '💬'; position: absolute; left: 8px; top: 6px; font-size: 14px; transition:.3s; }
+input:checked +.slider:after { content: '👤'; left: 36px; }
+
+.popup{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);align-items:center;justify-content:center;z-index:1000}
+.call-box{background:#202c33;padding:30px;border-radius:20px;text-align:center;color:white}
+.call-box img{width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:15px} /* gedein dikit pas telpon */
+.about-box{background:#2a3942;padding:20px;border-radius:12px;text-align:center}
+.about-box img{width:80px;height:80px;border-radius:50%;margin-bottom:10px}
+
+/* TOAST NOTIFIKASI */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #00a884;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,168,132,0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.toast.error { background: #ef4444; box-shadow: 0 4px 15px rgba(239,68,68,0.4); }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <div class="side-menu" id="sideMenu">
+    <h3>Menu</h3>
+    <a href="https://whatsapp.com/channel/0029Vaw0AGCEQIarHspllG1i" target="_blank" class="channel-btn">📢 Gabung Channel WhatsApp</a>
+    <button onclick="showAbout()">👤 About Owner</button>
+    <button onclick="clearChat()">🗑️ Hapus Chat</button>
+    <button onclick="toggleMenu()">✕ Tutup</button>
+  </div>
+
+  <div class="container" id="captureArea">
+    <!-- FOTO AVATAR UDAH DIGANTI -->
+    <div class="wa-header">
+      <img id="contactPhoto" src="https://files.catbox.moe/9uezlz.png">
+      <div class="wa-header-info">
+        <div class="wa-name" id="contactName">Nama Kontak</div>
+        <div class="wa-status" id="contactStatus">online</div>
+      </div>
+      <div class="wa-icons">
+        <button class="header-btn" onclick="showCall()" title="Panggil">📞</button>
+      </div>
+    </div>
+
+    <div class="chat-area" id="chatArea"></div>
+
+    <div id="replyPreview" class="reply-preview" style="display:none">
+      <span>Balas: <b id="replyText"></b></span>
+      <span class="close" onclick="cancelReply()">✕</span>
+    </div>
+
+    <div class="input-area">
+      <button class="btn-attach" onclick="document.getElementById('fileInput').click()">+</button>
+      <button class="btn-download" onclick="downloadImage()" title="Download Chat">📥</button>
+      <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="sendImage(event)">
+      <input type="text" id="chatInput" placeholder="Ketik pesan...">
+      <button class="btn-send" onclick="sendChat()">➤</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>⚙️ Setting Chat</h3>
+    <input type="text" id="editName" placeholder="Nama Kontak">
+    <input type="text" id="editPhoto" placeholder="URL Foto Kontak">
+    <input type="text" id="editStatus" placeholder="Status: online">
+    <select id="msgType"><option value="text">Pesan Teks</option><option value="voice">Voice Note</option></select>
+
+    <div class="switch-wrapper">
+      <span class="switch-label">Kirim Sebagai: <b id="senderText">Saya</b></span>
+      <label class="switch">
+        <input type="checkbox" id="senderToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <button onclick="updateHeader()">Update Profil</button>
+    <button onclick="addVoiceNote()">+ Tambah Voice Note</button>
+  </div>
+</div>
+
+<div class="popup" id="callPopup">
+  <div class="call-box">
+    <img id="callPhoto" src="https://files.catbox.moe/9uezlz.png">
+    <h2 id="callName"></h2>
+    <p>Panggilan WhatsApp...</p>
+    <button onclick="hideCall()" style="background:#ef4444;padding:10px 20px;border:none;border-radius:50%;color:white;font-size:20px;margin-top:20px">✕</button>
+  </div>
+</div>
+
+<div class="popup" id="aboutPopup"><div class="call-box about-box"><img src="https://files.catbox.moe/9uezlz.png"><h2>About Owner</h2><p><b>Nama:</b> Muhamad syifarizal </p><p><b>WA:</b> 0882-1399-3436</p><p>Dibuat untuk konten & hiburan</p><button style="background:#00a884;margin-top:15px;padding:10px 20px;border:none;border-radius:8px;color:white" onclick="hideAbout()">Tutup</button></div></div>
+
+<!-- TOAST NOTIFIKASI -->
+<div id="toast" class="toast"></div>
+
+<script>
+let replyTo = null;
+
+document.getElementById('senderToggle').addEventListener('change', function(){
+  document.getElementById('senderText').innerText = this.checked? 'Saya' : 'Dia';
+});
+
+function toggleMenu(){document.getElementById('sideMenu').classList.toggle('active');document.getElementById('overlay').classList.toggle('active')}
+
+function setReply(el){
+  const text = el.querySelector('.bubble-text')?.innerText || 'Gambar';
+  replyTo = {text, sender: el.classList.contains('me')? 'Saya' : document.getElementById('contactName').innerText};
+  document.getElementById('replyPreview').style.display='flex';
+  document.getElementById('replyText').innerText = text.substring(0,30);
+}
+function cancelReply(){replyTo=null;document.getElementById('replyPreview').style.display='none'}
+
+// FUNGSI TOAST
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.innerHTML = type === 'success' ? `✅ ${message}` : `❌ ${message}`;
+  toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+  toast.classList.add('show');
+  setTimeout(() => { toast.classList.remove('show'); }, 3000);
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  const type = document.getElementById('msgType').value;
+  if(!text && type === 'text') return;
+
+  const isMe = document.getElementById('senderToggle').checked;
+  const sender = isMe? 'me' : 'other';
+  const time = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+  const check = sender === 'me'? `<svg width="16" height="11" fill="#53bdeb"><path d="M11.1 2.5L3.7 9.9c-.2.2-.5.2-.7 0L.5 7.2c-.2-.2-.2-.5 0-.7.2-.2.5-.2.7 0L3 8.5l7-7c.2-.2.5-.2.7 0.2.2.2.5 0.7z"/></svg><svg style="margin-left:-8px" width="16" height="11" fill="#53bdeb"><path d="M11.1 2.5L3.7 9.9c-.2.2-.5.2-.7 0L.5 7.2c-.2-.2-.2-.5 0-.7.2-.2.5-.2.7 0L3 8.5l7-7c.2-.2.5-.2.7 0.2.2.2.5 0.7z"/></svg>` : '';
+
+  const bubble = document.createElement('div');
+  bubble.className = `bubble ${sender}`;
+  bubble.onclick = () => setReply(bubble);
+
+  let content = '';
+  if(sender === 'other') content += `<div class="sender-name">${document.getElementById('contactName').innerText}</div>`;
+  if(replyTo) content += `<div class="reply-box"><div class="reply-name">${replyTo.sender}</div>${replyTo.text}</div>`;
+
+  if(type === 'voice') content += `<div class="voice"><div class="play-btn">▶</div><div style="flex:1;height:3px;background:#e0e0e0"></div><span>0:12</span></div>`;
+  else content += `<div class="bubble-text">${text}</div>`;
+
+  bubble.innerHTML = `${content}<div class="bubble-footer"><span class="bubble-time">${time}</span>${check}</div>`;
+
+  document.getElementById('chatArea').appendChild(bubble);
+  input.value = ''; cancelReply();
+  document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight;
+}
+
+function sendImage(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(event){
+    const isMe = document.getElementById('senderToggle').checked;
+    const sender = isMe? 'me' : 'other';
+    const time = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+    const check = sender === 'me'? `<svg width="16" height="11" fill="#53bdeb"><path d="M11.1 2.5L3.7 9.9c-.2.2-.5.2-.7 0L.5 7.2c-.2-.2-.2-.5 0-.7.2-.2.5-.2.7 0L3 8.5l7-7c.2-.2.5-.2.7 0.2.2.2.5 0.7z"/></svg><svg style="margin-left:-8px" width="16" height="11" fill="#53bdeb"><path d="M11.1 2.5L3.7 9.9c-.2.2-.5.2-.7 0L.5 7.2c-.2-.2-.2-.5 0-.7.2-.2.5-.2.7 0L3 8.5l7-7c.2-.2.5-.2.7 0.2.2.2.5 0.7z"/></svg>` : '';
+
+    const bubble = document.createElement('div');
+    bubble.className = `bubble ${sender}`;
+    bubble.onclick = () => setReply(bubble);
+    let content = sender === 'other'? `<div class="sender-name">${document.getElementById('contactName').innerText}</div>` : '';
+    if(replyTo) content += `<div class="reply-box"><div class="reply-name">${replyTo.sender}</div>${replyTo.text}</div>`;
+    content += `<img src="${event.target.result}" class="bubble-img"><div class="bubble-text">${document.getElementById('chatInput').value}</div>`;
+
+    bubble.innerHTML = `${content}<div class="bubble-footer"><span class="bubble-time">${time}</span>${check}</div>`;
+    document.getElementById('chatArea').appendChild(bubble);
+    document.getElementById('chatInput').value=''; cancelReply();
+    document.getElementById('chatArea').scrollTop = document.getElementById('chatArea').scrollHeight;
+  }
+  reader.readAsDataURL(file);
+}
+
+// DOWNLOAD DENGAN NOTIFIKASI TOAST
+function downloadImage() {
+  const menuBtn = document.querySelector('.menu-btn');
+  menuBtn.style.display = 'none';
+
+  html2canvas(document.getElementById('captureArea'), {
+    backgroundColor: '#0b141a',
+    scale: 2,
+    useCORS: true
+  }).then(canvas => {
+    menuBtn.style.display = 'flex';
+    const date = new Date().toLocaleDateString('id-ID').replace(/\//g,'-');
+    const time = new Date().toLocaleTimeString('id-ID').replace(/:/g,'-');
+    const fileName = `FakeWA_${date}_${time}.png`;
+
+    canvas.toBlob(function(blob) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      showToast('Berhasil disimpan ke Pengunduhan!');
+    }, 'image/png');
+
+  }).catch(err => {
+    menuBtn.style.display = 'flex';
+    showToast('Gagal download', 'error');
+  });
+}
+
+function addVoiceNote(){document.getElementById('msgType').value='voice';sendChat();document.getElementById('msgType').value='text'}
+function updateHeader(){document.getElementById('contactName').innerText=document.getElementById('editName').value||'Nama Kontak';document.getElementById('contactPhoto').src=document.getElementById('editPhoto').value||'https://files.catbox.moe/9uezlz.png';document.getElementById('contactStatus').innerText=document.getElementById('editStatus').value||'online'}
+function showCall(){document.getElementById('callPhoto').src=document.getElementById('contactPhoto').src;document.getElementById('callName').innerText=document.getElementById('contactName').innerText;document.getElementById('callPopup').style.display='flex'}
+function hideCall(){document.getElementById('callPopup').style.display='none'}
+function showAbout(){toggleMenu();document.getElementById('aboutPopup').style.display='flex'}
+function hideAbout(){document.getElementById('aboutPopup').style.display='none'}
+function clearChat(){document.getElementById('chatArea').innerHTML='';toggleMenu()}
+document.getElementById('chatInput').addEventListener('keypress',e=>{if(e.key==='Enter')sendChat()});
+</script>
+</body>
+</html>
